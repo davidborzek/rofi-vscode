@@ -9,8 +9,7 @@
 
 1. Clone or download the repository.
 2. Install [rofi](https://github.com/davatorium/rofi/blob/next/INSTALL.md#install-distribution).
-
-To install the script you can easily move it a binary dictionary on your system, e.g. ``/usr/bin/``. Or you can just leave it anywhere else and run the script in this folder.
+3. Run ``make install``. (maybe you need ``sudo`` permissons to do this)
 
 ## Usage
 
