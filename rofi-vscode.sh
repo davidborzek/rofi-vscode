@@ -26,12 +26,5 @@ then
 	newWorkspaceName=$(rofi -dmenu -p "Workspace Name: ")
 	mkdir "$pathToWorkspaces$newWorkspaceName/"
 else
-	for i in $(seq 1 $numberOfWorkspaces);
-	do
-		possibleOption=$(echo $workspaces | cut -d ' ' -f $i)
-		if [ "$chosen" = "$possibleOption" ]
-		then
-			code "$pathToWorkspaces/$chosen/"
-		fi
-	done
+	code "$pathToWorkspaces/$chosen/"
 fi
