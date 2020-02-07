@@ -1,9 +1,10 @@
 #!/bin/bash
 
 ### Workspaces ###
-pathToWorkspaceList="/home/borzek/.i3/scripts/wslist"
+pathToWorkspaces=$(echo "$1")
+workspaces="$(ls -1 $pathToWorkspaces)"
 
-numberOfWorkspaces=$(wc -l <  $pathToWorkspaceList)
+numberOfWorkspaces=$(ls -1 $pathToWorkspaces | wc -l)
 
 ### Options ###
 newWorkspace="Add new workspace"
@@ -11,32 +12,26 @@ options=""
 
 for i in $(seq 1 $numberOfWorkspaces);
 do
-	echo $i
-	options="$options$( cat $pathToWorkspaceList | head -$i | tail -1 )\n"
+	options="$options$(echo $workspaces | cut -d " " -f $i )\n"
 done
 
 
 chosen="$(echo -e "$options$newWorkspace" | rofi -dmenu -p "VSCode Workspace Selector > ")"
 
 ### New Entry ###
-pathToNewWorkspace=""
 newWorkspaceName=""
 
 if [ "$chosen" = "$newWorkspace" ]
 then
-	pathToNewWorkspace=$(rofi -dmenu -p "Workspace Path: ")
-	if [ "$pathToNewWorkspace" != "" ]
-	then
-		newWorkspaceName=$(rofi -dmenu -p "Workspace Title: ")  
-		echo "$newWorkspaceName:$pathToNewWorkspace" >> $pathToWorkspaceList
-	fi
+	newWorkspaceName=$(rofi -dmenu -p "Workspace Name: ")
+	mkdir "$pathToWorkspaces$newWorkspaceName/"
 else
 	for i in $(seq 1 $numberOfWorkspaces);
 	do
-		if [ "$chosen" = "$(cat $pathToWorkspaceList | head -$i | tail -1)" ]
+		possibleOption=$(echo $workspaces | cut -d ' ' -f $i)
+		if [ "$chosen" = "$possibleOption" ]
 		then
-			code $(echo $chosen | cut -d ":" -f2)
+			code "$pathToWorkspaces/$chosen/"
 		fi
 	done
 fi
-
