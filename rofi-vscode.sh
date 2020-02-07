@@ -26,5 +26,10 @@ then
 	newWorkspaceName=$(rofi -dmenu -p "Workspace Name: ")
 	mkdir "$pathToWorkspaces$newWorkspaceName/"
 else
-	code "$pathToWorkspaces/$chosen/"
+	if [ "$chosen" = "" ]
+	then
+		exit 0
+	else
+		code "$pathToWorkspaces/$chosen/"
+	fi
 fi
