@@ -1,0 +1,42 @@
+#!/bin/bash
+
+### Workspaces ###
+pathToWorkspaceList="/home/borzek/.i3/scripts/wslist"
+
+numberOfWorkspaces=$(wc -l <  $pathToWorkspaceList)
+
+### Options ###
+newWorkspace="Add new workspace"
+options=""
+
+for i in $(seq 1 $numberOfWorkspaces);
+do
+	echo $i
+	options="$options$( cat $pathToWorkspaceList | head -$i | tail -1 )\n"
+done
+
+
+chosen="$(echo -e "$options$newWorkspace" | rofi -dmenu -p "VSCode Workspace Selector > ")"
+
+### New Entry ###
+pathToNewWorkspace=""
+newWorkspaceName=""
+
+if [ "$chosen" = "$newWorkspace" ]
+then
+	pathToNewWorkspace=$(rofi -dmenu -p "Workspace Path: ")
+	if [ "$pathToNewWorkspace" != "" ]
+	then
+		newWorkspaceName=$(rofi -dmenu -p "Workspace Title: ")  
+		echo "$newWorkspaceName:$pathToNewWorkspace" >> $pathToWorkspaceList
+	fi
+else
+	for i in $(seq 1 $numberOfWorkspaces);
+	do
+		if [ "$chosen" = "$(cat $pathToWorkspaceList | head -$i | tail -1)" ]
+		then
+			code $(echo $chosen | cut -d ":" -f2)
+		fi
+	done
+fi
+
