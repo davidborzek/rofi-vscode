@@ -58,14 +58,43 @@ remove () {
 	fi;
 }
 
-check_if_git_repo_is_public () {
-	statusCode=$(curl -I $1 | 2>/dev/null | head -n 1 | cut -d$' ' -f2)
-	if [ "$statusCode" = "200" ]; then
+check_if_https () {
+	if [[ ${1} == https* ]]; then
 		return 0;
+	fi;
+	return 1;
+}
+
+check_if_git_repo_is_public () {
+	url_to_check=${1//.git/}
+	check_if_https "$1"
+	if [ ${?} = "0" ]; then
+		statusCode=$(curl -I -q $url_to_check | head -n 1 | cut -d$' ' -f2)
+		if [ "$statusCode" = "200" ]; then
+			return 0;
+		else
+			if [[ $url_to_check =~ "@" ]] && [[ $url_to_check =~ ":" ]]
+			then
+				return 0;
+			fi
+			return 1;
+		fi;
 	else
-		return 1;
+		return 0;
 	fi;
  }
+
+clone_private_https_repo () {
+	username=$(rofi -dmenu -p "(ESC to abort) Github Username: ")
+	password=$(rofi -dmenu -p "(ESC to abort) Github Password: ")
+
+	repoPath=${1//"https://"/}
+	repoName=$(basename $git_url | cut -d '.' -f 1)
+
+	authorized_git_url="https://$username:$password@$repoPath"
+
+	git clone $authorized_git_url "$pathToWorkspaces/$repoName"
+}
 
 clone_from_git () {
 	git_url=$(rofi -dmenu -p "(For private repo with HTTPS use https://username:password@remote) Git repository url: ")
@@ -75,34 +104,43 @@ clone_from_git () {
 
 	if [ ${?} = "0" ]; then
 		command -v git >/dev/null 2>&1 || { echo >&2 "I require git but it's not installed.  Aborting."; exit 1; }
-		git ls-remote $git_url > /dev/null 2>&1
-		if [ "$?" -ne 0 ]; then
-			echo "[ERROR] No git repository found at '$git_url'"
-			exit 1;
-		fi
-		repoName=$(basename $git_url | cut -d '.' -f 1)
 
-		editName=$(echo -e "Yes\nNo" | rofi -dmenu -p "Do you want to rename the repository '$repoName'?");
+		check_if_git_repo_is_public "$git_url"
 
 		if [ ${?} = "1" ]; then
-			exit
-		fi;
+			clone_private_https_repo "$git_url"
+		else
 
-		if [ ${?} = "0" ]; then
-			if [ ${editName} = "Yes" ]; then
-				newName=$(rofi -dmenu -p "(ESC to abort) Rename the repository '$repoName': ");
-				if [ ${?} = "1" ]; then
-					exit
-				fi;
+			git ls-remote $git_url > /dev/null 2>&1
+			if [ "$?" -ne 0 ]; then
+				echo "[ERROR] No git repository found at '$git_url'"
+				exit 1;
+			fi
 
-				if [ ${?} = "0" ]; then
-					repoName=$newName
+			repoName=$(basename $git_url | cut -d '.' -f 1)
+
+			editName=$(echo -e "Yes\nNo" | rofi -dmenu -p "Do you want to rename the repository '$repoName'?");
+
+			if [ ${?} = "1" ]; then
+				exit
+			fi;
+
+			if [ ${?} = "0" ]; then
+				if [ ${editName} = "Yes" ]; then
+					newName=$(rofi -dmenu -p "(ESC to abort) Rename the repository '$repoName': ");
+					if [ ${?} = "1" ]; then
+						exit
+					fi;
+
+					if [ ${?} = "0" ]; then
+						repoName=$newName
+					fi;
 				fi;
 			fi;
+
+			git clone $git_url "$pathToWorkspaces/$repoName"
+
 		fi;
-
-		git clone $git_url "$pathToWorkspaces/$repoName"
-
 	fi;
 }
 
@@ -125,7 +163,6 @@ if [ ${rofi_status} = "12" ]; then
 	fi;
 
 	if [ ${?} = "0" ]; then
-		echo "Yo"
 		if [ ${operation} = "Open" ]; then
 			code "$pathToWorkspaces/$chosen/"
 			exit
