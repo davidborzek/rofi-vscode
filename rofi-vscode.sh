@@ -53,7 +53,7 @@ remove () {
 
 	if [ ${?} = "0" ]; then
 		if [ ${shouldDelete} = "Yes" ]; then
-			rm -r "$pathToWorkspaces/$chosen/"
+			rm -rf "$pathToWorkspaces/$chosen/"
 		fi;
 	fi;
 }
