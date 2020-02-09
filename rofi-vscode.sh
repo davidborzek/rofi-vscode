@@ -21,6 +21,7 @@ fi;
 
 ### Options ###
 newWorkspace="Create new workspace"
+existingWorkspaceFromGit="Add existing project from git"
 
 args=( -dmenu
 	-kb-custom-1 'Alt+r'
@@ -29,7 +30,7 @@ args=( -dmenu
 	-p 'VSCode Workspace Selector > '
 )
 
-chosen=$(echo -e "$(ls  $pathToWorkspaces)\n\n$newWorkspace" | rofi "${args[@]}")
+chosen=$(echo -e "$(ls  $pathToWorkspaces)\n\n$newWorkspace\n$existingWorkspaceFromGit" | rofi "${args[@]}")
 
 rofi_status=$?
 
@@ -54,6 +55,45 @@ remove () {
 		if [ ${shouldDelete} = "Yes" ]; then
 			rm -r "$pathToWorkspaces/$chosen/"
 		fi;
+	fi;
+}
+
+clone_from_git () {
+	git_url=$(rofi -dmenu -p "Git URL (SSH / HTTPS): ")
+	if [ ${?} = "1" ]; then
+		exit
+	fi;
+
+	if [ ${?} = "0" ]; then
+		command -v git >/dev/null 2>&1 || { echo >&2 "I require git but it's not installed.  Aborting."; exit 1; }
+		git ls-remote $git_url > /dev/null 2>&1
+		if [ "$?" -ne 0 ]; then
+			echo "[ERROR] No git repository found at '$git_url'"
+			exit 1;
+		fi
+		repoName=$(basename $git_url | cut -d '.' -f 1)
+
+		editName=$(echo -e "Yes\nNo" | rofi -dmenu -p "Do you want to rename the repository '$repoName'?");
+
+		if [ ${?} = "1" ]; then
+			exit
+		fi;
+
+		if [ ${?} = "0" ]; then
+			if [ ${shouldDelete} = "Yes" ]; then
+				newName=$(rofi -dmenu -p "(ESC to abort) Rename the repository '$chosen': ");
+				if [ ${?} = "1" ]; then
+					exit
+				fi;
+
+				if [ ${?} = "0" ]; then
+					repoName=$newName
+				fi;
+			fi;
+		fi;
+
+		git clone $git_url "$pathToWorkspaces/$repoName"
+
 	fi;
 }
 
@@ -98,6 +138,8 @@ if [ ${rofi_status} = "0" ]; then
 	then
 		newWorkspaceName=$(rofi -dmenu -p "Workspace Name: ")
 		mkdir "$pathToWorkspaces/$newWorkspaceName/" && code "$pathToWorkspaces/$newWorkspaceName/"
+	elif [ "$chosen" = "$existingWorkspaceFromGit" ]; then
+		clone_from_git
 	else
 		code "$pathToWorkspaces/$chosen/"
 	fi;
