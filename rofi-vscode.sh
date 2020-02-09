@@ -10,9 +10,6 @@ chosen=$(echo "$(ls  $pathToWorkspaces)\n\n$newWorkspace" | rofi -dmenu -kb-cust
 
 rofi_status=$?
 
-### New Entry ###
-newWorkspaceName=""
-
 if [ ${rofi_status} = "1" ]; then
 		exit
 fi;
