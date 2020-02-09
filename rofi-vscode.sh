@@ -33,11 +33,18 @@ chosen=$(echo -e "$(ls  $pathToWorkspaces)\n\n$newWorkspace" | rofi "${args[@]}"
 
 rofi_status=$?
 
-if [ ${rofi_status} = "1" ]; then
+edit () {
+	newName=$(rofi -dmenu -p "(ESC to abort) Rename the workspace '$chosen': ");
+	if [ ${?} = "1" ]; then
 		exit
-fi;
+	fi;
 
-if [ ${rofi_status} = "10" ]; then
+	if [ ${?} = "0" ]; then
+		mv "$pathToWorkspaces/$chosen/" "$pathToWorkspaces/$newName/"
+	fi;
+}
+
+remove () {
 	shouldDelete=$(echo -e "Yes\nNo" | rofi -dmenu -p "Do you want to delete the workspace '$chosen'?");
 	if [ ${?} = "1" ]; then
 		exit
@@ -48,17 +55,18 @@ if [ ${rofi_status} = "10" ]; then
 			rm -r "$pathToWorkspaces/$chosen/"
 		fi;
 	fi;
+}
+
+if [ ${rofi_status} = "1" ]; then
+	exit
+fi;
+
+if [ ${rofi_status} = "10" ]; then
+	remove
 fi;
 
 if [ ${rofi_status} = "11" ]; then
-	newName=$(rofi -dmenu -p "(ESC to abort) Rename the workspace '$chosen': ");
-	if [ ${?} = "1" ]; then
-		exit
-	fi;
-
-	if [ ${?} = "0" ]; then
-		mv "$pathToWorkspaces/$chosen/" "$pathToWorkspaces/$newName/"
-	fi;
+	edit
 fi;
 
 if [ ${rofi_status} = "12" ]; then
@@ -75,27 +83,12 @@ if [ ${rofi_status} = "12" ]; then
 		fi;
 
 		if [ ${operation} = "Edit" ]; then
-			newName=$(rofi -dmenu -p "(ESC to abort) Rename the workspace '$chosen': ");
-			if [ ${?} = "1" ]; then
-				exit 
-			fi;
-
-			if [ ${?} = "0" ]; then
-				mv "$pathToWorkspaces/$chosen/" "$pathToWorkspaces/$newName/"
-			fi;
+			edit
 		fi;
 
 		if [ ${operation} = "Delete" ]; then
 			shouldDelete=$(echo -e "Yes\nNo" | rofi -dmenu -p "Do you want to delete the workspace '$chosen'?");
-			if [ ${?} = "1" ]; then
-				exit
-			fi;
-
-			if [ ${?} = "0" ]; then
-				if [ ${shouldDelete} = "Yes" ]; then
-					rm -r "$pathToWorkspaces/$chosen/"
-				fi;
-			fi;
+			remove
 		fi;
 
 	fi;
