@@ -4,7 +4,7 @@
 pathToWorkspaces=$(echo "$1")
 
 ### Options ###
-newWorkspace="Add new workspace"
+newWorkspace="Create new workspace"
 
 chosen=$(echo "$(ls  $pathToWorkspaces)\n$newWorkspace" | rofi -dmenu -p "VSCode Workspace Selector > ")
 
