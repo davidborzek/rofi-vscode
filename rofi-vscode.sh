@@ -19,25 +19,10 @@ if [[ ! -d "$pathToWorkspaces" ]]; then
 	exit
 fi;
 
-### Options ###
-newWorkspace="Create new workspace"
-existingWorkspaceFromGit="Add existing project from git"
-
-args=( -dmenu
-	-kb-custom-1 'Alt+r'
-	-kb-custom-2 'Alt+e'
-	-kb-custom-3 'Alt+Return'
-	-p 'VSCode Workspace Selector > '
-)
-
-chosen=$(echo -e "$(ls  $pathToWorkspaces)\n\n$newWorkspace\n$existingWorkspaceFromGit" | rofi "${args[@]}")
-
-rofi_status=$?
-
 edit () {
-	newName=$(rofi -dmenu -p "(ESC to abort) Rename the workspace '$chosen': ");
+	newName=$(rofi -dmenu -p "(ESC to go back) Rename the workspace '$chosen': ");
 	if [ ${?} = "1" ]; then
-		exit
+		main
 	fi;
 
 	if [ ${?} = "0" ]; then
@@ -46,9 +31,9 @@ edit () {
 }
 
 remove () {
-	shouldDelete=$(echo -e "Yes\nNo" | rofi -dmenu -p "Do you want to delete the workspace '$chosen'?");
+	shouldDelete=$(echo -e "Yes\nNo" | rofi -dmenu -p "(ESC to go back) Do you want to delete the workspace '$chosen'?");
 	if [ ${?} = "1" ]; then
-		exit
+		main
 	fi;
 
 	if [ ${?} = "0" ]; then
@@ -98,7 +83,7 @@ check_if_successfully_cloned () {
 		openClonedWorkspace=$(echo -e "Yes\nNo" | rofi -dmenu -p "Successfully cloned! Do you want to open '$2'?");
 
 		if [ ${?} = "1" ]; then
-			exit
+			main
 		fi;
 
 		if [ ${?} = "0" ]; then
@@ -113,7 +98,13 @@ check_if_successfully_cloned () {
 
 clone_private_https_repo () {
 	username=$(rofi -dmenu -p "(ESC to abort) Github Username: ")
+	if [ ${?} = "1" ]; then
+			exit
+	fi;
 	password=$(rofi -dmenu -password -p "(ESC to abort) Github Password: ")
+	if [ ${?} = "1" ]; then
+			exit
+	fi;
 
 	repoPath=${1//"https://"/}
 	repoName=$(basename $git_url | cut -d '.' -f 1)
@@ -128,7 +119,7 @@ clone_private_https_repo () {
 clone_from_git () {
 	git_url=$(rofi -dmenu -p "(HTTPS or SSH) Git repository url: ")
 	if [ ${?} = "1" ]; then
-		exit
+		main
 	fi;
 
 	if [ ${?} = "0" ]; then
@@ -152,49 +143,71 @@ clone_from_git () {
 	fi;
 }
 
-if [ ${rofi_status} = "1" ]; then
-	exit
-fi;
+main () {
 
-if [ ${rofi_status} = "10" ]; then
-	remove
-fi;
+	### Options ###
+	newWorkspace="Create new workspace"
+	existingWorkspaceFromGit="Add existing project from git"
 
-if [ ${rofi_status} = "11" ]; then
-	edit
-fi;
+	args=( -dmenu
+		-kb-custom-1 'Alt+r'
+		-kb-custom-2 'Alt+e'
+		-kb-custom-3 'Alt+Return'
+		-p 'VSCode Workspace Selector > '
+	)
 
-if [ ${rofi_status} = "12" ]; then
-	operation=$(echo -e "Name: $chosen\nPath: $pathToWorkspaces/$chosen\n\nOpen\nEdit\nDelete" | rofi -dmenu -p "(ESC to abort) Workspace information: ");
-	if [ ${?} = "1" ]; then
-		exit 
+	chosen=$(echo -e "$(ls  $pathToWorkspaces)\n\n$newWorkspace\n$existingWorkspaceFromGit" | rofi "${args[@]}")
+
+	rofi_status=$?
+
+	if [ ${rofi_status} = "1" ]; then
+		exit
 	fi;
 
-	if [ ${?} = "0" ]; then
-		if [ ${operation} = "Open" ]; then
+	if [ ${rofi_status} = "10" ]; then
+		remove
+	fi;
+
+	if [ ${rofi_status} = "11" ]; then
+		edit
+	fi;
+
+	if [ ${rofi_status} = "12" ]; then
+		git_remote_url=$(git -C $pathToWorkspaces/$chosen config --get remote.origin.url)
+		operation=$(echo -e "Name: $chosen\nPath: $pathToWorkspaces/$chosen\nGit remote url: $git_remote_url\n\nOpen\nEdit\nDelete" | rofi -dmenu -p "(ESC to go back) Workspace information: ");
+		if [ ${?} = "1" ]; then
+			main 
+		fi;
+
+		if [ ${?} = "0" ]; then
+			if [ ${operation} = "Open" ]; then
+				code "$pathToWorkspaces/$chosen/"
+				exit
+			fi;
+
+			if [ ${operation} = "Edit" ]; then
+				edit
+			fi;
+
+			if [ ${operation} = "Delete" ]; then
+				remove
+			fi;
+
+		fi;
+	fi;
+
+	if [ ${rofi_status} = "0" ]; then
+		if [ "$chosen" = "$newWorkspace" ];
+		then
+			newWorkspaceName=$(rofi -dmenu -p "Workspace Name: ")
+			mkdir "$pathToWorkspaces/$newWorkspaceName/" && code "$pathToWorkspaces/$newWorkspaceName/"
+		elif [ "$chosen" = "$existingWorkspaceFromGit" ]; then
+			clone_from_git
+		else
 			code "$pathToWorkspaces/$chosen/"
-			exit
 		fi;
-
-		if [ ${operation} = "Edit" ]; then
-			edit
-		fi;
-
-		if [ ${operation} = "Delete" ]; then
-			remove
-		fi;
-
 	fi;
-fi;
 
-if [ ${rofi_status} = "0" ]; then
-	if [ "$chosen" = "$newWorkspace" ];
-	then
-		newWorkspaceName=$(rofi -dmenu -p "Workspace Name: ")
-		mkdir "$pathToWorkspaces/$newWorkspaceName/" && code "$pathToWorkspaces/$newWorkspaceName/"
-	elif [ "$chosen" = "$existingWorkspaceFromGit" ]; then
-		clone_from_git
-	else
-		code "$pathToWorkspaces/$chosen/"
-	fi;
-fi;
+}
+
+main
