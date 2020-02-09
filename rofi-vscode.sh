@@ -119,25 +119,6 @@ clone_from_git () {
 
 			repoName=$(basename $git_url | cut -d '.' -f 1)
 
-			editName=$(echo -e "Yes\nNo" | rofi -dmenu -p "Do you want to rename the repository '$repoName'?");
-
-			if [ ${?} = "1" ]; then
-				exit
-			fi;
-
-			if [ ${?} = "0" ]; then
-				if [ ${editName} = "Yes" ]; then
-					newName=$(rofi -dmenu -p "(ESC to abort) Rename the repository '$repoName': ");
-					if [ ${?} = "1" ]; then
-						exit
-					fi;
-
-					if [ ${?} = "0" ]; then
-						repoName=$newName
-					fi;
-				fi;
-			fi;
-
 			git clone $git_url "$pathToWorkspaces/$repoName"
 
 		fi;
