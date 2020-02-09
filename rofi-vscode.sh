@@ -80,8 +80,8 @@ clone_from_git () {
 		fi;
 
 		if [ ${?} = "0" ]; then
-			if [ ${shouldDelete} = "Yes" ]; then
-				newName=$(rofi -dmenu -p "(ESC to abort) Rename the repository '$chosen': ");
+			if [ ${editName} = "Yes" ]; then
+				newName=$(rofi -dmenu -p "(ESC to abort) Rename the repository '$repoName': ");
 				if [ ${?} = "1" ]; then
 					exit
 				fi;
