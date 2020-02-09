@@ -28,6 +28,7 @@ The ``Create new workspace`` functionality asks your for new directory name and 
 
 - ``Alt+r``: Remove the selected workspace
 - ``Alt+e`` : Edit (rename) the selected workspace
+- ``Alt+Return``: Open a information view about the selected workspace
 
 ## Screenshots
 
