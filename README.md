@@ -13,7 +13,7 @@
 
 ## Usage
 
-##### Example
+### Example
 
 If the script is in a binary directory:
 ``rofi-vscode "/path/to/your/workspaces"``
@@ -26,6 +26,10 @@ Replace ``/path/to/your/workspaces`` with the directory of your vscode workspace
 The script will open a rofi dmnenu where it will list all the directories in the given workspaces directory. If you select a directory (or project) it will open it in vscode.
 
 The ``Create new workspace`` functionality asks your for new directory name and creates a new directory in the workspaces folder. 
+
+### Keybindings
+
+- ``Alt+r``: Remove a selected workspace
 
 ## Screenshots
 
