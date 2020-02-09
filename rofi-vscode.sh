@@ -3,6 +3,17 @@
 ### Workspaces ###
 pathToWorkspaces=$(echo "$1"  | sed 's:/*$::')
 
+help="rofi-vscode usage:\n 	[directory or args]\n\nDirectory:\n	Folder of your vscode workspaces (./ for current dir) \n\nArgs:\n	-h / -H / --help	Help page"
+
+if [[ ${pathToWorkspaces} == -* ]]; then
+	if [ ${pathToWorkspaces} = "-h" ] || [ ${pathToWorkspaces} = "-H" ] || [ ${pathToWorkspaces} = "--help" ]; then
+		echo -e $help
+	else
+		echo -e $help
+		exit
+	fi;
+fi;
+
 if [[ ! -d "$pathToWorkspaces" ]]; then
 	echo "Error: the directory does not exist."
 	exit
