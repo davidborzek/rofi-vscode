@@ -87,9 +87,28 @@ check_if_git_repo_is_public () {
 check_if_git_repo_exists () {
 	git ls-remote $1 > /dev/null 2>&1
 	if [ "$?" -ne 0 ]; then
+		rofi -e "[ERROR] No git repository found at '$git_url' or invalid username/password!"
 		echo "[ERROR] No git repository found at '$git_url' or invalid username/password!"
 		exit 1;
 	fi
+}
+
+check_if_successfully_cloned () {
+	if [ "$1" = 0 ]; then
+		openClonedWorkspace=$(echo -e "Yes\nNo" | rofi -dmenu -p "Successfully cloned! Do you want to open '$2'?");
+
+		if [ ${?} = "1" ]; then
+			exit
+		fi;
+
+		if [ ${?} = "0" ]; then
+			if [ ${openClonedWorkspace} = "Yes" ]; then
+				code "$pathToWorkspaces/$2"
+			fi;
+		fi;
+	else
+		rofi -e "Error! Please try it again!"
+	fi;
 }
 
 clone_private_https_repo () {
@@ -126,6 +145,8 @@ clone_from_git () {
 			repoName=$(basename $git_url | cut -d '.' -f 1)
 
 			git clone $git_url "$pathToWorkspaces/$repoName"
+
+			check_if_successfully_cloned "$?" "$repoName"
 
 		fi;
 	fi;
