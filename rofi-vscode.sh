@@ -6,7 +6,13 @@ pathToWorkspaces=$(echo "$1"  | sed 's:/*$::')
 ### Options ###
 newWorkspace="Create new workspace"
 
-chosen=$(echo "$(ls  $pathToWorkspaces)\n\n$newWorkspace" | rofi -dmenu -kb-custom-1 "Alt+r" -kb-custom-2 "Alt+e" -p "VSCode Workspace Selector > ")
+args=( -dmenu
+	-kb-custom-1 'Alt+r'
+	-kb-custom-2 'Alt+e'
+	-p 'VSCode Workspace Selector > '
+)
+
+chosen=$(echo -e "$(ls  $pathToWorkspaces)\n\n$newWorkspace" | rofi "${args[@]}")
 
 rofi_status=$?
 
