@@ -87,7 +87,7 @@ check_if_git_repo_is_public () {
 check_if_git_repo_exists () {
 	git ls-remote $1 > /dev/null 2>&1
 	if [ "$?" -ne 0 ]; then
-		echo "[ERROR] No git repository found at '$git_url'"
+		echo "[ERROR] No git repository found at '$git_url' or invalid username/password!"
 		exit 1;
 	fi
 }
