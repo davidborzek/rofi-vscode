@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 ### Workspaces ###
 pathToWorkspaces=$(echo "$1")
