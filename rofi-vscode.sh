@@ -101,6 +101,8 @@ clone_private_https_repo () {
 
 	authorized_git_url="https://$username:$password@$repoPath"
 
+	check_if_git_repo_exists "$git_url"
+
 	git clone $authorized_git_url "$pathToWorkspaces/$repoName"
 }
 
