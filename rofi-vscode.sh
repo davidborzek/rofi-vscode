@@ -97,7 +97,7 @@ clone_private_https_repo () {
 }
 
 clone_from_git () {
-	git_url=$(rofi -dmenu -p "(For private repo with HTTPS use https://username:password@remote) Git repository url: ")
+	git_url=$(rofi -dmenu -p "(HTTPS or SSH) Git repository url: ")
 	if [ ${?} = "1" ]; then
 		exit
 	fi;
