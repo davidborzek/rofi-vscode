@@ -87,7 +87,6 @@ if [ ${rofi_status} = "12" ]; then
 		fi;
 
 		if [ ${operation} = "Delete" ]; then
-			shouldDelete=$(echo -e "Yes\nNo" | rofi -dmenu -p "Do you want to delete the workspace '$chosen'?");
 			remove
 		fi;
 
