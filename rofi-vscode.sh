@@ -59,7 +59,7 @@ remove () {
 }
 
 clone_from_git () {
-	git_url=$(rofi -dmenu -p "Git URL (SSH / HTTPS): ")
+	git_url=$(rofi -dmenu -p "(For private repo with HTTPS use https://username:password@remote) Git repository url: ")
 	if [ ${?} = "1" ]; then
 		exit
 	fi;
