@@ -33,7 +33,13 @@ The script will open a rofi dmenu where it will list all the directories in the 
 - ``Alt+e`` : Edit (rename) the selected workspace
 - ``Alt+Return``: Open a information view about the selected workspace
 
+## Requirements
+
+- rofi
+- git
+- curl
+- Visual Studio Code (code)
+
 ## Screenshots
 
 soon...
-
