@@ -99,11 +99,11 @@ check_if_successfully_cloned () {
 clone_private_https_repo () {
 	username=$(rofi -dmenu -p "(ESC to abort) Github Username: ")
 	if [ ${?} = "1" ]; then
-			exit
+			main
 	fi;
 	password=$(rofi -dmenu -password -p "(ESC to abort) Github Password: ")
 	if [ ${?} = "1" ]; then
-			exit
+			main
 	fi;
 
 	repoPath=${1//"https://"/}
@@ -204,7 +204,11 @@ main () {
 		elif [ "$chosen" = "$existingWorkspaceFromGit" ]; then
 			clone_from_git
 		else
-			code "$pathToWorkspaces/$chosen/"
+			if [ ! "$chosen" = "" ]; then
+				code "$pathToWorkspaces/$chosen/"
+			else
+				main
+			fi;
 		fi;
 	fi;
 
