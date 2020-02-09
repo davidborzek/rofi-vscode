@@ -86,7 +86,7 @@ check_if_git_repo_is_public () {
 
 clone_private_https_repo () {
 	username=$(rofi -dmenu -p "(ESC to abort) Github Username: ")
-	password=$(rofi -dmenu -p "(ESC to abort) Github Password: ")
+	password=$(rofi -dmenu -password -p "(ESC to abort) Github Password: ")
 
 	repoPath=${1//"https://"/}
 	repoName=$(basename $git_url | cut -d '.' -f 1)
