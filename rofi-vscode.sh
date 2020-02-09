@@ -58,6 +58,15 @@ remove () {
 	fi;
 }
 
+check_if_git_repo_is_public () {
+	statusCode=$(curl -I $1 | 2>/dev/null | head -n 1 | cut -d$' ' -f2)
+	if [ "$statusCode" = "200" ]; then
+		return 0;
+	else
+		return 1;
+	fi;
+ }
+
 clone_from_git () {
 	git_url=$(rofi -dmenu -p "(For private repo with HTTPS use https://username:password@remote) Git repository url: ")
 	if [ ${?} = "1" ]; then
