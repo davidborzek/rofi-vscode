@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 ### Workspaces ###
 pathToWorkspaces=$(echo "$1"  | sed 's:/*$::')
