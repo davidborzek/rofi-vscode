@@ -16,14 +16,11 @@
 ### Example
 
 If the script is in a binary directory:
-``rofi-vscode "/path/to/your/workspaces"``
+``rofi-vscode [directory]``
 
-Without: 
-``/path/to/the/script/rofi-vscode "/path/to/your/workspaces"``
+Replace ``[directory]`` with the directory of your vscode workspaces. (e.g. ``/home/user/git``)
 
-Replace ``/path/to/your/workspaces`` with the directory of your vscode workspaces.
-
-The script will open a rofi dmnenu where it will list all the directories in the given workspaces directory. If you select a directory (or project) it will open it in vscode.
+The script will open a rofi dmenu where it will list all the directories in the given workspaces directory. If you select a directory (or project) it will open it in vscode.
 
 The ``Create new workspace`` functionality asks your for new directory name and creates a new directory in the workspaces folder. 
 
