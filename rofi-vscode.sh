@@ -3,6 +3,11 @@
 ### Workspaces ###
 pathToWorkspaces=$(echo "$1"  | sed 's:/*$::')
 
+if [[ ! -d "$pathToWorkspaces" ]]; then
+	echo "Error: the directory does not exist."
+	exit
+fi;
+
 ### Options ###
 newWorkspace="Create new workspace"
 
