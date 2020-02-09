@@ -20,9 +20,12 @@ If the script is in a binary directory:
 
 Replace ``[directory]`` with the directory of your vscode workspaces. (e.g. ``/home/user/git``)
 
+### Functions
+
 The script will open a rofi dmenu where it will list all the directories in the given workspaces directory. If you select a directory (or project) it will open it in vscode.
 
-The ``Create new workspace`` functionality asks your for new directory name and creates a new directory in the workspaces folder. 
+- ``Create new workspace``: It asks you for new directory name and creates a new directory in the workspaces folder. Finally it will open it in VSCode.
+- ``Add existing project from git`` : It allows you to clone a git repository from the scirpt either from a SSH or a HTTPS source.
 
 ### Keybindings
 
