@@ -82,7 +82,15 @@ check_if_git_repo_is_public () {
 	else
 		return 0;
 	fi;
- }
+}
+
+check_if_git_repo_exists () {
+	git ls-remote $1 > /dev/null 2>&1
+	if [ "$?" -ne 0 ]; then
+		echo "[ERROR] No git repository found at '$git_url'"
+		exit 1;
+	fi
+}
 
 clone_private_https_repo () {
 	username=$(rofi -dmenu -p "(ESC to abort) Github Username: ")
@@ -111,11 +119,7 @@ clone_from_git () {
 			clone_private_https_repo "$git_url"
 		else
 
-			git ls-remote $git_url > /dev/null 2>&1
-			if [ "$?" -ne 0 ]; then
-				echo "[ERROR] No git repository found at '$git_url'"
-				exit 1;
-			fi
+			check_if_git_repo_exists "$git_url"
 
 			repoName=$(basename $git_url | cut -d '.' -f 1)
 
