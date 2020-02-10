@@ -150,6 +150,7 @@ main () {
 	existingWorkspaceFromGit="Add existing project from git"
 
 	args=( -dmenu
+		-i
 		-kb-custom-1 'Alt+r'
 		-kb-custom-2 'Alt+e'
 		-kb-custom-3 'Alt+Return'
@@ -174,7 +175,7 @@ main () {
 
 	if [ ${rofi_status} = "12" ]; then
 		git_remote_url=$(git -C $pathToWorkspaces/$chosen config --get remote.origin.url)
-		operation=$(echo -e "Name: $chosen\nPath: $pathToWorkspaces/$chosen\nGit remote url: $git_remote_url\n\nOpen\nEdit\nDelete" | rofi -dmenu -p "(ESC to go back) Workspace information: ");
+		operation=$(echo -e "Name: $chosen\nPath: $pathToWorkspaces/$chosen\nGit remote url: $git_remote_url\n\nOpen\nEdit\nDelete" | rofi -dmenu -i -p "(ESC to go back) Workspace information: ");
 		if [ ${?} = "1" ]; then
 			main 
 		fi;
