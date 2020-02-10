@@ -147,6 +147,10 @@ clone_from_git () {
 	fi;
 }
 
+open_in_terminal () {
+	cd $1 && rofi-sensible-terminal
+}
+
 main () {
 
 	### Options ###
@@ -158,6 +162,7 @@ main () {
 		-kb-custom-1 'Alt+r'
 		-kb-custom-2 'Alt+e'
 		-kb-custom-3 'Alt+Return'
+		-kb-custom-4 'Alt+t'
 		-p 'VSCode Workspace Selector > '
 	)
 
@@ -179,15 +184,20 @@ main () {
 
 	if [ ${rofi_status} = "12" ]; then
 		git_remote_url=$(git -C $pathToWorkspaces/$chosen config --get remote.origin.url)
-		operation=$(echo -e "Name: $chosen\nPath: $pathToWorkspaces/$chosen\nGit remote url: $git_remote_url\n\nOpen\nEdit\nDelete" | rofi -dmenu -i -p "(ESC to go back) Workspace information: ");
+		operation=$(echo -e "Name: $chosen\nPath: $pathToWorkspaces/$chosen\nGit remote url: $git_remote_url\n\nOpen\nTerminal\nEdit\nDelete" | rofi -dmenu -i -p "(ESC to go back) Workspace information: ");
 		if [ ${?} = "1" ]; then
 			main 
 		fi;
 
 		if [ ${?} = "0" ]; then
+
 			if [ ${operation} = "Open" ]; then
 				code "$pathToWorkspaces/$chosen/"
 				exit
+			fi;
+
+			if [ ${operation} = "Terminal" ]; then
+				open_in_terminal "$pathToWorkspaces/$chosen/"
 			fi;
 
 			if [ ${operation} = "Edit" ]; then
@@ -201,6 +211,10 @@ main () {
 		fi;
 	fi;
 
+	if [ ${rofi_status} = "13" ]; then
+		open_in_terminal "$pathToWorkspaces/$chosen/"
+	fi;
+
 	if [ ${rofi_status} = "0" ]; then
 		if [ "$chosen" = "$newWorkspace" ];
 		then
@@ -211,8 +225,6 @@ main () {
 		else
 			if [ ! "$chosen" = "" ]; then
 				code "$pathToWorkspaces/$chosen/"
-			else
-				main
 			fi;
 		fi;
 	fi;
