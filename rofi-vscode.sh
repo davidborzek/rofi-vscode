@@ -27,6 +27,7 @@ edit () {
 
 	if [ ${?} = "0" ]; then
 		mv "$pathToWorkspaces/$chosen/" "$pathToWorkspaces/$newName/"
+		main
 	fi;
 }
 
@@ -39,7 +40,9 @@ remove () {
 	if [ ${?} = "0" ]; then
 		if [ ${shouldDelete} = "Yes" ]; then
 			rm -rf "$pathToWorkspaces/$chosen/"
+			main
 		fi;
+		main
 	fi;
 }
 
@@ -90,6 +93,7 @@ check_if_successfully_cloned () {
 			if [ ${openClonedWorkspace} = "Yes" ]; then
 				code "$pathToWorkspaces/$2"
 			fi;
+			main
 		fi;
 	else
 		rofi -e "Error! Please try it again!"
