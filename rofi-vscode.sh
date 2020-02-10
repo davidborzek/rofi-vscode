@@ -32,7 +32,7 @@ edit () {
 }
 
 remove () {
-	shouldDelete=$(echo -e "Yes\nNo" | rofi -dmenu -p "(ESC to go back) Do you want to delete the workspace '$chosen'?");
+	shouldDelete=$(echo -e "Yes\nNo" | rofi -dmenu -no-custom -p "(ESC to go back) Do you want to delete the workspace '$chosen'?");
 	if [ ${?} = "1" ]; then
 		main
 	fi;
@@ -83,7 +83,7 @@ check_if_git_repo_exists () {
 
 check_if_successfully_cloned () {
 	if [ "$1" = 0 ]; then
-		openClonedWorkspace=$(echo -e "Yes\nNo" | rofi -dmenu -p "Successfully cloned! Do you want to open '$2'?");
+		openClonedWorkspace=$(echo -e "Yes\nNo" | rofi -dmenu -no-custom -p "Successfully cloned! Do you want to open '$2'?");
 
 		if [ ${?} = "1" ]; then
 			main
@@ -159,6 +159,7 @@ main () {
 
 	args=( -dmenu
 		-i
+		-no-custom
 		-kb-custom-1 'Alt+r'
 		-kb-custom-2 'Alt+e'
 		-kb-custom-3 'Alt+Return'
@@ -184,7 +185,7 @@ main () {
 
 	if [ ${rofi_status} = "12" ]; then
 		git_remote_url=$(git -C $pathToWorkspaces/$chosen config --get remote.origin.url)
-		operation=$(echo -e "Name: $chosen\nPath: $pathToWorkspaces/$chosen\nGit remote url: $git_remote_url\n\nOpen\nTerminal\nEdit\nDelete" | rofi -dmenu -i -p "(ESC to go back) Workspace information: ");
+		operation=$(echo -e "Name: $chosen\nPath: $pathToWorkspaces/$chosen\nGit remote url: $git_remote_url\n\nOpen\nTerminal\nEdit\nDelete" | rofi -dmenu -i -no-custom -p "(ESC to go back) Workspace information: ");
 		if [ ${?} = "1" ]; then
 			main 
 		fi;
