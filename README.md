@@ -32,6 +32,7 @@ The script will open a rofi dmenu where it will list all the directories in the 
 - ``Alt+r``: Remove the selected workspace
 - ``Alt+e`` : Edit (rename) the selected workspace
 - ``Alt+Return``: Open a information view about the selected workspace
+- ``Alt+t``: Opens the selected workspace in a terminal
 
 ## Requirements
 
