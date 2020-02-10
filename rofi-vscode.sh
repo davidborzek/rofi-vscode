@@ -226,6 +226,8 @@ main () {
 		else
 			if [ ! "$chosen" = "" ]; then
 				code "$pathToWorkspaces/$chosen/"
+			else
+				main
 			fi;
 		fi;
 	fi;
