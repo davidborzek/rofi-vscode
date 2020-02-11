@@ -1,5 +1,5 @@
 # rofi-vscode
-##### Table of Contents  
+## Table of Contents  
 - [Installation](#installation)  
 - [Usage](#usage)  
 - [Screenshots](#screenshots) 
@@ -26,6 +26,9 @@ The script will open a rofi dmenu where it will list all the directories in the 
 
 - ``Create new workspace``: It asks you for new directory name and creates a new directory in the workspaces folder. Finally it will open it in VSCode.
 - ``Add existing project from git`` : It allows you to clone a git repository from the scirpt either from a SSH or a HTTPS source.
+
+##### Info
+If you want to clone a git repository via ssh and your ssh key is protected with a passphrase, you should either remove the passphrase for better comfort or you have to run ``ssh-add ~/.ssh/id_rsa`` before you clone the repo.
 
 ### Keybindings
 
