@@ -54,6 +54,7 @@ check_if_https () {
 }
 
 check_if_git_repo_is_public () {
+	command -v curl >/dev/null 2>&1 || { echo >&2 "I require curl but it's not installed.  Aborting."; exit 1; }
 	url_to_check=${1//.git/}
 	check_if_https "$1"
 	if [ ${?} = "0" ]; then
