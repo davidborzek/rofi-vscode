@@ -154,6 +154,8 @@ open_in_terminal () {
 
 main () {
 
+	command -v rofi >/dev/null 2>&1 || { echo >&2 "I require rofi but it's not installed.  Aborting."; exit 1; }
+
 	### Options ###
 	newWorkspace="Create new workspace"
 	existingWorkspaceFromGit="Add existing project from git"
